@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUI RDBMS Project</title>
+    <link rel="stylesheet" href="mainpage.css">
+</head>
+<body>
+    <header>
+        <div class="app-title">GUI RDBMS Project</div>
+        <div class="header-actions">
+            <button class="header-btn">Help</button>
+            <button class="header-btn">Settings</button>
+            <div class="user-avatar">U</div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="title-container">
+            <div>
+                <h1 class="page-title">My SQL</h1>
+                <p class="page-subtitle">Manage your databases with ease</p>
+            </div>
+            <div class="action-group">
+                <button class="action-group-btn">
+                    <span class="icon">⬇️</span>
+                    Export
+                </button>
+                <button class="action-group-btn">
+                    <span class="icon">📁</span>
+                    Databases
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-container">
+            <div class="sidebar">
+                <h2 class="sidebar-title">SQL Operations</h2>
+                <div class="action-buttons">
+                    <button class="action-btn btn-create">Create</button>
+                    <button class="action-btn btn-insert">Insert</button>
+                    <button class="action-btn btn-update">Update</button>
+                    <button class="action-btn btn-select">Select</button>
+                    <button class="action-btn btn-alter">Alter</button>
+                    <button class="action-btn btn-delete">Delete</button>
+                    <button class="action-btn btn-drop">Drop</button>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="welcome-content">
+                    <div class="db-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 3C7.58 3 4 4.79 4 7V17C4 19.21 7.59 21 12 21S20 19.21 20 17V7C20 4.79 16.42 3 12 3M18 17C18 17.5 15.87 19 12 19S6 17.5 6 17V14.77C7.61 15.55 9.72 16 12 16S16.39 15.55 18 14.77V17M18 12.45C16.7 13.4 14.42 14 12 14C9.58 14 7.3 13.4 6 12.45V9.64C7.47 10.47 9.61 11 12 11C14.39 11 16.53 10.47 18 9.64V12.45M12 9C8.13 9 6 7.5 6 7S8.13 5 12 5C15.87 5 18 6.5 18 7S15.87 9 12 9Z" fill="#ef6c00"/>
+                        </svg>
+                    </div>
+                    
+                    <div>
+                        <h2 class="welcome-title">Welcome to GUI RDBMS</h2>
+                        <p class="welcome-subtitle">Select an SQL operation from the sidebar to begin working with your database</p>
+                    </div>
+                    
+                    <div class="features-container">
+                        <div class="feature-card">
+                            <h3 class="feature-title">User-friendly</h3>
+                            <p class="feature-subtitle">No SQL knowledge required</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="feature-title">Visualize</h3>
+                            <p class="feature-subtitle">See your database structure</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3 class="feature-title">Manage</h3>
+                            <p class="feature-subtitle">Easy database operations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="screen-share-notice">
+        <span class="notice-icon">⏸</span>
+        <span class="notice-text">discord.com is sharing your screen and audio.</span>
+        <div class="notice-buttons">
+            <button class="notice-btn stop-btn">Stop sharing</button>
+            <button class="notice-btn hide-btn">Hide</button>
+        </div>
+    </div>
+    
+   
+    <script src="mainpage.js"></script>
+</body>
+</html>
