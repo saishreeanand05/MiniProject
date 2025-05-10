@@ -12,14 +12,3 @@ document.querySelectorAll('.action-btn').forEach(button => {
         console.log(`${this.textContent.trim()} operation selected`);
     });
 });
-
-// Hide screen share notice
-document.querySelector('.hide-btn').addEventListener('click', function() {
-    document.querySelector('.screen-share-notice').style.display = 'none';
-});
-
-// Stop screen sharing
-document.querySelector('.stop-btn').addEventListener('click', function() {
-    document.querySelector('.screen-share-notice').style.display = 'none';
-    console.log('Screen sharing stopped');
-});
