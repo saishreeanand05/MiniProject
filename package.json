@@ -20,6 +20,7 @@
   "homepage": "https://github.com/saniyafatima07/MiniProject#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "sqlite3": "^5.1.7"
   }
 }

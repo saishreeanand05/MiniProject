@@ -1,14 +1,225 @@
-document.querySelectorAll('.action-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        // Clear active state from all buttons
-        document.querySelectorAll('.action-btn').forEach(btn => {
-            btn.classList.remove('active');
+const modal = document.getElementById('sqlModal');
+const form = document.getElementById('sqlForm');
+const fieldsContainer = document.getElementById('modalFields');
+const title = document.getElementById('modalTitle');
+const cancelBtn = document.getElementById('cancelModalBtn');
+
+const showModal = (operation) => {
+    modal.classList.remove('hidden');
+    form.reset();
+    fieldsContainer.innerHTML = '';
+    title.textContent = `${operation} Operation`;
+
+    if (operation === 'Create') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>Number of Columns:</label>
+            <input type="number" name="columnCount" min="1" required>
+            <div id="extraFields"></div>
+        `;
+
+        form.columnCount?.addEventListener('input', () => {
+            const count = parseInt(form.columnCount.value);
+            const extra = document.getElementById('extraFields');
+            extra.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                extra.innerHTML += `
+                    <label>Column ${i + 1} Name:</label>
+                    <input type="text" name="colName${i}" required>
+                    <label>Column ${i + 1} Type:</label>
+                    <input type="text" name="colType${i}" required>
+                `;
+            }
         });
-        
-        // Add active state to clicked button
-        this.classList.add('active');
-        
-        // Here you would handle the specific SQL operation logic
-        console.log(`${this.textContent.trim()} operation selected`);
+    }
+
+    else if (operation === 'Insert') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>Column Names (comma-separated):</label>
+            <input type="text" name="columns" placeholder="e.g. id,name,age" required>
+            <label>Values (comma-separated):</label>
+            <input type="text" name="values" placeholder="e.g. 1,'Alice',22" required>
+        `;
+    }
+
+    else if (operation === 'Select') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>Where Clause (optional):</label>
+            <input type="text" name="where" placeholder="e.g. id = 1">
+        `;
+    }
+
+    else if (operation === 'Update') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>SET Clause:</label>
+            <input type="text" name="set" placeholder="e.g. name='Bob'" required>
+            <label>WHERE Clause:</label>
+            <input type="text" name="where" placeholder="e.g. id=1" required>
+        `;
+    }
+
+    else if (operation === 'Delete') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>WHERE Clause:</label>
+            <input type="text" name="where" placeholder="e.g. id=2" required>
+        `;
+    }
+
+    else if (operation === 'Drop') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name to Drop:</label>
+            <input type="text" name="tableName" required>
+        `;
+    }
+
+    else if (operation === 'Alter') {
+        fieldsContainer.innerHTML = `
+            <label>Table Name:</label>
+            <input type="text" name="tableName" required>
+            <label>ALTER Command:</label>
+            <input type="text" name="command" placeholder="e.g. ADD COLUMN age INTEGER" required>
+        `;
+    }
+};
+
+cancelBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+});
+
+document.querySelectorAll('.action-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const op = button.textContent.trim();
+        showModal(op);
+    });
+});
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const op = title.textContent.split(' ')[0]; 
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    if (op === 'Create') {
+        const colCount = parseInt(data.columnCount);
+        const columns = [];
+        for (let i = 0; i < colCount; i++) {
+            columns.push({
+                name: form[`colName${i}`].value,
+                type: form[`colType${i}`].value
+            });
+        }
+
+        fetch('/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tableName: data.tableName,
+                columns: columns
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            alert(res.message || 'Table created!');
+            modal.classList.add('hidden');
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error creating table');
+        });
+
+        return;
+    }
+
+    const endpointMap = {
+        'Insert': '/insert',
+        'Select': '/select',
+        'Update': '/update',
+        'Delete': '/delete',
+        'Drop': '/drop',
+        'Alter': '/alter'
+    };
+
+    const endpoint = endpointMap[op];
+
+    if (!endpoint) {
+        alert('Unknown operation: ' + op);
+        return;
+    }
+
+    let payload = {};
+
+    switch (op) {
+        case 'Insert':
+            payload = {
+                tableName: data.tableName,
+                columns: data.columns,
+                values: data.values
+            };
+            break;
+        case 'Select':
+            payload = {
+                tableName: data.tableName,
+                where: data.where || ''
+            };
+            break;
+        case 'Update':
+            payload = {
+                tableName: data.tableName,
+                set: data.set,
+                where: data.where
+            };
+            break;
+        case 'Delete':
+            payload = {
+                tableName: data.tableName,
+                where: data.where
+            };
+            break;
+        case 'Drop':
+            payload = {
+                tableName: data.tableName
+            };
+            break;
+        case 'Alter':
+            payload = {
+                tableName: data.tableName,
+                command: data.command
+            };
+            break;
+        default:
+            console.warn('Unhandled operation');
+            return;
+    }
+
+    fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Server error');
+        return res.json();
+    })
+    .then(res => {
+        if (Array.isArray(res)) {
+            alert('Result: ' + JSON.stringify(res, null, 2)); 
+        } else {
+            alert(res.message || res.error || 'Done');
+        }
+        modal.classList.add('hidden');
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Error: ' + err.message);
     });
 });
