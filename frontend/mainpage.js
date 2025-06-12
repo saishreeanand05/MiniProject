@@ -229,7 +229,7 @@ async function loadUsers() {
     container.innerHTML = 'Loading...';
   
     try {
-      const res = await fetch('https://jsonplaceholder.typicode.com/users');
+      const res = await fetch('http://localhost:3000/students');
       
   
       // Debug log

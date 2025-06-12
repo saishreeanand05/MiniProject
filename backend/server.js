@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import students from './api.js';
 import sqlite3 from 'sqlite3';
 const db = new sqlite3.Database('./gui_rdbms.db');
 
@@ -15,6 +16,10 @@ app.use(express.json());
 
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname, '../frontend/mainpage.html'));
+});
+
+app.get('/students', (req,res) => {
+    res.json(students);
 });
 
 app.post('/create', (req,res) => {
