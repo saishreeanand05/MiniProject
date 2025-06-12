@@ -19,12 +19,13 @@
      }
     table {
       border-collapse: collapse;
+      background-color: black;
       width: 100%;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     th, td {
       border: 1px solid #444;
-      padding: 8px;
+      /* padding: 2px; */
       text-align: left;
       color: beige;
     }
@@ -51,11 +52,11 @@
 /* Ensure consistent sizing and spacing */
 .scrollable-table th,
 .scrollable-table td {
-  min-width: 120px;
-  max-width: 300px;
+  min-width: 80px;
+  max-width: 150px;
   word-wrap: break-word;
   border: 1px solid #444;
-  padding: 8px;
+  padding: 6px;
   text-align: left;
   font-size: 14px;
 }
@@ -106,7 +107,7 @@
             <div class="content-area">
                 
                 <h3>Your Database</h3>
-                <div id="table-container"class="scrollable-table" style="display: none;"
+                <div id="table-container"class="scrollable-table"
                 >Loading...</div>
                
 

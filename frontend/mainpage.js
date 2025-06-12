@@ -225,6 +225,7 @@ form.addEventListener('submit', (e) => {
 });
 async function loadUsers() {
     const container = document.getElementById('table-container');
+    container.style.display = 'block';
     container.innerHTML = 'Loading...';
   
     try {
@@ -288,7 +289,7 @@ async function loadUsers() {
   
 
   document.addEventListener('DOMContentLoaded', () => {
-    const selectBtn = document.querySelector('.action-btn btn-select');
+    const selectBtn = document.querySelector('.btn-select');
     if (selectBtn) {
       selectBtn.addEventListener('click', () => {
         loadUsers(); // <-- Your function
