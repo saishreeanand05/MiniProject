@@ -102,5 +102,5 @@ app.post('/alter', (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`My SQL app listening on http://localhost:${port}`)
+    console.log(`My SQL app is for sure  listening on http://localhost:${port}`)
 });
