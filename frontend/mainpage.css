@@ -261,7 +261,7 @@ main {
 }
 
 .action-group-btn {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #600988 0%, #8b5cf6 100%);
   color: #fff;
   border: none;
   border-radius: 25px;
@@ -371,7 +371,7 @@ main {
   border-radius: 20px;
   box-shadow: 0 2px 18px #40c4ff55, 0 1.5px 0 #40c4ff99 inset;
   padding: 1.2rem 1rem;
-  border: 2.5px solid #40c4ff;
+  border: 0.2px solid #5928a8;
   width: 350px;
   max-height: 90vh;
   overflow-y: auto;
@@ -400,7 +400,7 @@ main {
 }
 
 .modal-content button {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #3438ff 0%, #6a47e6 100%);
   color: #fff;
   border-radius: 25px;
   font-weight: 600;
