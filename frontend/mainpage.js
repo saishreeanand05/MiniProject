@@ -224,7 +224,6 @@ form.addEventListener('submit', (e) => {
 async function loadTableData(tableName) {
     const container = document.getElementById('table-container');
     container.style.display = 'block';
-    container.innerHTML = 'Loading...';
 
     try {
         const res = await fetch('/select', {
@@ -243,7 +242,6 @@ async function loadTableData(tableName) {
         displayTableData(data, tableName);
 
     } catch (err) {
-        container.innerHTML = '❌ Error loading data';
         console.error("Fetch failed:", err);
     }
 }
@@ -263,9 +261,9 @@ function displayTableData(data, tableName) {
     const columns = Object.keys(data[0]);
 
     const tableHtml = `
-        <div style="color: beige; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; color: beige; margin-bottom: 10px;">
             <h4>Table: ${tableName}</h4>
-            <button onclick="exportTableToCSV('${tableName}')" style="background: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer;">
+            <button onclick="exportTableToCSV('${tableName}')" style="background: #8263ca; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer;">
                 Export to CSV
             </button>
         </div>
