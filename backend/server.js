@@ -15,9 +15,14 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use(express.json());
 
+<<<<<<< HEAD
 // Home route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/mainpage.html'));
+=======
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, '../frontend/landing.html'));
+>>>>>>> c16b1ef738142f5710c2925a02e1a38347e3c205
 });
 
 // Send mock students data (fallback)
