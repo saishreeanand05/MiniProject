@@ -346,6 +346,11 @@
     </section>
 
     <script>
+        document.querySelector('.cta-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'login.html';
+        });
+
         function scrollToFeatures() {
             document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
         }
