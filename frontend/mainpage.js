@@ -6,6 +6,41 @@ const cancelBtn = document.getElementById('cancelModalBtn');
 
 let currentTableName = 'students'; // Default table to show
 
+// Function to display SQL command - IMPROVED VERSION
+function displaySQLCommand(command) {
+    console.log('Attempting to display SQL command:', command);
+    
+    // Use a more reliable approach to find the element
+    const sqlDisplay = document.getElementById('sql-command-display');
+    if (sqlDisplay) {
+        sqlDisplay.textContent = command;
+        console.log('SQL command displayed successfully:', command);
+        
+        // Add a visual feedback effect
+        sqlDisplay.style.backgroundColor = '#2a2a2a';
+        sqlDisplay.style.transition = 'background-color 0.3s ease';
+        setTimeout(() => {
+            sqlDisplay.style.backgroundColor = '#181818';
+        }, 500);
+    } else {
+        console.error('SQL display element not found! Available elements:', document.querySelectorAll('[id*="sql"]'));
+        
+        // Create the element if it doesn't exist (fallback)
+        const container = document.getElementById('table-container');
+        if (container && container.parentNode) {
+            const sqlContainer = document.createElement('div');
+            sqlContainer.innerHTML = `
+                <div id="sql-command-box" class="sql-command-container">
+                    <h4>Last Executed SQL Command:</h4>
+                    <div id="sql-command-display" class="sql-command-text">${command}</div>
+                </div>
+            `;
+            container.parentNode.insertBefore(sqlContainer, container.nextSibling);
+            console.log('Created SQL command element as fallback');
+        }
+    }
+}
+
 const showModal = (operation) => {
     modal.classList.remove('hidden');
     form.reset();
@@ -21,19 +56,23 @@ const showModal = (operation) => {
             <div id="extraFields"></div>
         `;
 
-        form.columnCount?.addEventListener('input', () => {
-            const count = parseInt(form.columnCount.value);
-            const extra = document.getElementById('extraFields');
-            extra.innerHTML = '';
-            for (let i = 0; i < count; i++) {
-                extra.innerHTML += `
-                    <label>Column ${i + 1} Name:</label>
-                    <input type="text" name="colName${i}" required>
-                    <label>Column ${i + 1} Type:</label>
-                    <input type="text" name="colType${i}" required>
-                `;
-            }
-        });
+        // Fix: Use proper event listener attachment
+        const columnCountInput = form.querySelector('input[name="columnCount"]');
+        if (columnCountInput) {
+            columnCountInput.addEventListener('input', () => {
+                const count = parseInt(columnCountInput.value);
+                const extra = document.getElementById('extraFields');
+                extra.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    extra.innerHTML += `
+                        <label>Column ${i + 1} Name:</label>
+                        <input type="text" name="colName${i}" required>
+                        <label>Column ${i + 1} Type:</label>
+                        <input type="text" name="colType${i}" required>
+                    `;
+                }
+            });
+        }
     } else if (operation === 'Insert') {
         fieldsContainer.innerHTML = `
             <label>Table Name:</label>
@@ -99,15 +138,29 @@ form.addEventListener('submit', (e) => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    // Handle CREATE operation specially
     if (op === 'Create') {
         const colCount = parseInt(data.columnCount);
         const columns = [];
         for (let i = 0; i < colCount; i++) {
-            columns.push({
-                name: form[`colName${i}`].value,
-                type: form[`colType${i}`].value
-            });
+            const colNameInput = form.querySelector(`input[name="colName${i}"]`);
+            const colTypeInput = form.querySelector(`input[name="colType${i}"]`);
+            if (colNameInput && colTypeInput) {
+                columns.push({
+                    name: colNameInput.value,
+                    type: colTypeInput.value
+                });
+            }
         }
+
+        // Display the SQL command IMMEDIATELY before the fetch
+        const columnsSql = columns.map(col => `${col.name} ${col.type}`).join(', ');
+        const sqlCommand = `CREATE TABLE IF NOT EXISTS ${data.tableName} (${columnsSql})`;
+        
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            displaySQLCommand(sqlCommand);
+        }, 10);
 
         fetch('/create', {
             method: 'POST',
@@ -121,7 +174,6 @@ form.addEventListener('submit', (e) => {
         .then(res => {
             alert(res.message || 'Table created!');
             modal.classList.add('hidden');
-            // Update current table and reload data
             currentTableName = data.tableName;
             loadTableData(currentTableName);
         })
@@ -133,6 +185,7 @@ form.addEventListener('submit', (e) => {
         return;
     }
 
+    // Handle other operations
     const endpointMap = {
         'Insert': '/insert',
         'Select': '/select',
@@ -150,6 +203,7 @@ form.addEventListener('submit', (e) => {
     }
 
     let payload = {};
+    let sqlCommand = '';
 
     switch (op) {
         case 'Insert':
@@ -158,12 +212,14 @@ form.addEventListener('submit', (e) => {
                 columns: data.columns,
                 values: data.values
             };
+            sqlCommand = `INSERT INTO ${data.tableName} (${data.columns}) VALUES (${data.values})`;
             break;
         case 'Select':
             payload = {
                 tableName: data.tableName,
                 where: data.where || ''
             };
+            sqlCommand = `SELECT * FROM ${data.tableName}${data.where ? ` WHERE ${data.where}` : ''}`;
             break;
         case 'Update':
             payload = {
@@ -171,28 +227,37 @@ form.addEventListener('submit', (e) => {
                 set: data.set,
                 where: data.where
             };
+            sqlCommand = `UPDATE ${data.tableName} SET ${data.set} WHERE ${data.where}`;
             break;
         case 'Delete':
             payload = {
                 tableName: data.tableName,
                 where: data.where
             };
+            sqlCommand = `DELETE FROM ${data.tableName} WHERE ${data.where}`;
             break;
         case 'Drop':
             payload = {
                 tableName: data.tableName
             };
+            sqlCommand = `DROP TABLE IF EXISTS ${data.tableName}`;
             break;
         case 'Alter':
             payload = {
                 tableName: data.tableName,
                 command: data.command
             };
+            sqlCommand = `ALTER TABLE ${data.tableName} ${data.command}`;
             break;
         default:
             console.warn('Unhandled operation');
             return;
     }
+
+    // Display the SQL command IMMEDIATELY before executing - with delay to ensure DOM is ready
+    setTimeout(() => {
+        displaySQLCommand(sqlCommand);
+    }, 10);
 
     fetch(endpoint, {
         method: 'POST',
@@ -209,8 +274,10 @@ form.addEventListener('submit', (e) => {
             currentTableName = data.tableName;
         } else {
             alert(res.message || res.error || 'Done');
-            // Reload current table data after operations
-            loadTableData(currentTableName);
+            // Reload current table data after non-select operations
+            if (op !== 'Drop') {
+                loadTableData(data.tableName || currentTableName);
+            }
         }
         modal.classList.add('hidden');
     })
@@ -240,9 +307,24 @@ async function loadTableData(tableName) {
         console.log("Data received:", data);
 
         displayTableData(data, tableName);
+        
+        // Display SQL command AFTER successful data load
+        const selectCommand = `SELECT * FROM ${tableName}`;
+        setTimeout(() => {
+            displaySQLCommand(selectCommand);
+        }, 100);
 
     } catch (err) {
         console.error("Fetch failed:", err);
+        container.innerHTML = `<div style="color: beige; text-align: center; padding: 20px;">
+            <h4>Table: ${tableName}</h4>
+            <p>Error loading table: ${err.message}</p>
+        </div>`;
+        
+        // Still display the command even if fetch fails
+        setTimeout(() => {
+            displaySQLCommand(`SELECT * FROM ${tableName} -- (Error: ${err.message})`);
+        }, 100);
     }
 }
 
@@ -295,6 +377,11 @@ function displayTableData(data, tableName) {
 // Export function
 async function exportTableToCSV(tableName) {
     try {
+        // Display the SQL command for export FIRST
+        setTimeout(() => {
+            displaySQLCommand(`SELECT * FROM ${tableName} -- (Exporting to CSV)`);
+        }, 10);
+        
         const res = await fetch('/select', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -364,12 +451,18 @@ function importCSV() {
             const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
             const tableName = file.name.replace('.csv', '').replace(/[^a-zA-Z0-9_]/g, '_');
 
-            // Create table first
+            // Display CREATE TABLE command
             const columns = headers.map(header => ({
                 name: header,
                 type: 'TEXT' // Default to TEXT type
             }));
+            const columnsSql = columns.map(col => `${col.name} ${col.type}`).join(', ');
+            
+            setTimeout(() => {
+                displaySQLCommand(`CREATE TABLE IF NOT EXISTS ${tableName} (${columnsSql}) -- (Importing CSV)`);
+            }, 10);
 
+            // Create table first
             const createRes = await fetch('/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -418,9 +511,19 @@ function importCSV() {
     input.click();
 }
 
-// Load default table on page load
+// Enhanced DOM ready event listener
 document.addEventListener('DOMContentLoaded', () => {
-    loadTableData(currentTableName);
+    console.log('DOM loaded, initializing...');
+    
+    // Wait a bit more to ensure all elements are properly loaded
+    setTimeout(() => {
+        console.log('Setting initial SQL command message...');
+        displaySQLCommand('Welcome! Execute a SQL operation to see the command here.');
+        
+        // Try to load default table
+        console.log('Loading default table...');
+        loadTableData(currentTableName);
+    }, 200);
 
     // Add event listeners for export and import buttons
     const exportBtn = document.querySelector('.export-btn-main');
@@ -439,4 +542,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (importBtn) {
         importBtn.addEventListener('click', importCSV);
     }
+    
+    // Debug: Log available elements
+    console.log('Available SQL-related elements:', {
+        'sql-command-display': document.getElementById('sql-command-display'),
+        'sql-command-box': document.getElementById('sql-command-box'),
+        'table-container': document.getElementById('table-container')
+    });
 });
