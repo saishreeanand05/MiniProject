@@ -42,7 +42,7 @@ app.post('/create', (req, res) => {
     }
 
     const columnsSql = columns.map(col => `\`${col.name}\` ${col.type}`).join(', ');
-    const createQuery = `CREATE TABLE IF NOT EXISTS \`${tableName}\` (${columnsSql})`;
+    const createQuery = `CREATE TABLE \`${tableName}\` (${columnsSql})`;
     
     db.run(createQuery, (err) => {
         if (err) {

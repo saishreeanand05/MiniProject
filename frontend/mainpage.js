@@ -153,10 +153,11 @@ form.addEventListener('submit', (e) => {
         }
 
         const columnsSql = columns.map(col => `${col.name} ${col.type}`).join(', ');
-        const sqlCommand = `CREATE TABLE IF NOT EXISTS ${data.tableName} (${columnsSql})`;
+        const sqlCommand = `CREATE TABLE ${data.tableName} (${columnsSql})`;
         
-        // Display SQL command immediately
-        displaySQLCommand(sqlCommand);
+        // Use setTimeout to ensure DOM is ready
+            displaySQLCommand(sqlCommand);
+        
 
         fetch('/create', {
             method: 'POST',
@@ -253,8 +254,9 @@ form.addEventListener('submit', (e) => {
             return;
     }
 
-    // Display the SQL command IMMEDIATELY before executing
-    displaySQLCommand(sqlCommand);
+    // Display the SQL command IMMEDIATELY before executing - with delay to ensure DOM is ready
+        displaySQLCommand(sqlCommand);
+   
 
     fetch(endpoint, {
         method: 'POST',
@@ -348,6 +350,12 @@ async function loadTableData(tableName) {
         console.log("Data received:", data);
 
         displayTableData(data, tableName);
+        
+        // Display SQL command AFTER successful data load
+        const selectCommand = `SELECT * FROM ${tableName}`;
+        setTimeout(() => {
+            displaySQLCommand(selectCommand);
+        }, 100000000);
 
     } catch (err) {
         console.error("Fetch failed:", err);
@@ -355,8 +363,10 @@ async function loadTableData(tableName) {
             <h4>Table: ${tableName}</h4>
         </div>`;
         
-        // Update SQL command to show error
-        displaySQLCommand(`SELECT * FROM ${tableName} -- Error: ${err.message}`);
+        // Still display the command even if fetch fails
+        setTimeout(() => {
+            displaySQLCommand(`SELECT * FROM ${tableName}`);
+        }, 1000000000);
     }
 }
 
@@ -490,7 +500,8 @@ function importCSV() {
             const columnsSql = columns.map(col => `${col.name} ${col.type}`).join(', ');
             const createCommand = `CREATE TABLE IF NOT EXISTS ${tableName} (${columnsSql}) -- Importing CSV`;
             
-            displaySQLCommand(createCommand);
+            displaySQLCommand(`CREATE TABLE ${tableName} (${columnsSql}) -- (Importing CSV)`);
+          
 
             // Create table first
             const createRes = await fetch('/create', {
