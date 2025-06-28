@@ -318,12 +318,11 @@ async function loadTableData(tableName) {
         console.error("Fetch failed:", err);
         container.innerHTML = `<div style="color: beige; text-align: center; padding: 20px;">
             <h4>Table: ${tableName}</h4>
-            <p>Error loading table: ${err.message}</p>
         </div>`;
         
         // Still display the command even if fetch fails
         setTimeout(() => {
-            displaySQLCommand(`SELECT * FROM ${tableName} -- (Error: ${err.message})`);
+            displaySQLCommand(`SELECT * FROM ${tableName}`);
         }, 100);
     }
 }
