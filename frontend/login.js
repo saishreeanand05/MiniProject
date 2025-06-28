@@ -12,6 +12,6 @@ document.getElementById("login-form").addEventListener("submit", function (e) {
 
   // Here you would normally send the data to the server
   console.log("Logging in with:", { name, email});
-  alert("Login successful (mock)!");
+  alert(`Welcome back ${name} !`);
   window.location.href = "mainpage.html";
 });

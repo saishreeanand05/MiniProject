@@ -34,13 +34,10 @@ document.getElementById("login-form").addEventListener("submit", function (e) {
     alert("❌ Signup failed: " + data.message);
   }
 })
-.catch(err => {
-  console.error("Error:", err);
-  alert("⚠️ Server error");
-});
 
 
   // Here you would normally send the data to the server
   console.log("Signed Up with:", { name, email });
-  alert("Account created (mock)!");
+  alert("Get ready to dive into learning databases!");
+  window.location.href = "mainpage.html";
 });
