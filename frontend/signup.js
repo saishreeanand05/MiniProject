@@ -1,6 +1,7 @@
 
 //  Firebase Config
 const firebaseConfig = {
+<<<<<<< HEAD
   apiKey: "AIzaSyBCCPdCayYXPzozji9uopVfEv-2cCvuejE",
   authDomain: "gui-based-rdbms.firebaseapp.com",
   projectId: "gui-based-rdbms",
@@ -8,6 +9,15 @@ const firebaseConfig = {
   messagingSenderId: "1077077176403",
   appId: "1:1077077176403:web:406b53d703079279e856a6",
   measurementId: "G-8ECYVQDDPV"
+=======
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+>>>>>>> 67a5b10 (Add firebase authentication and add firebase credentials in env file.)
 };
 
 //  Initialize Firebase
