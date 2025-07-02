@@ -1,43 +1,60 @@
-document.getElementById("login-form").addEventListener("submit", function (e) {
+
+//  Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyBCCPdCayYXPzozji9uopVfEv-2cCvuejE",
+  authDomain: "gui-based-rdbms.firebaseapp.com",
+  projectId: "gui-based-rdbms",
+  storageBucket: "gui-based-rdbms.firebasestorage.app",
+  messagingSenderId: "1077077176403",
+  appId: "1:1077077176403:web:406b53d703079279e856a6",
+  measurementId: "G-8ECYVQDDPV"
+};
+
+//  Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+//  Sign-Up Handler
+document.getElementById("signup-form").addEventListener("submit", function (e) {
   e.preventDefault(); // prevent form reload
 
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-
-  const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-  
-  if(!strongPassword.test(password)){
-    document.getElementById("password-warning").textContent="Password too weak";
-    return;
-  }
   const confirmPassword = document.getElementById("confirm-password").value;
+  const warning = document.getElementById("password-warning");
 
-  if(password !== confirmPassword ){
-     document.getElementById("password-warning").textContent="Password did not match. Please try again..";
+  //  Validate inputs
+  if (!name || !email || !password || !confirmPassword) {
+    warning.textContent = "Please fill in all fields.";
     return;
   }
-  if (!name || !email || !password) {
-    alert("Please fill in all fields.");
+
+  //  Password strength check
+  const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!strongPassword.test(password)) {
+    warning.textContent = "Password too weak. Must be at least 8 characters with upper, lower, digit, and special char.";
     return;
   }
-  fetch("http://localhost:5501/signup", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name, email, password })
-})
-.then(res => res.json())
-.then(data => {
-  if (data.success) {
-    alert("✅ Account created!");
-  } else {
-    alert("❌ Signup failed: " + data.message);
+
+  //  Confirm password match
+  if (password !== confirmPassword) {
+    warning.textContent = "Passwords do not match. Please try again.";
+    return;
   }
-})
 
+  
+  warning.textContent = "";
 
-  // Here you would normally send the data to the server
-  console.log("Signed Up with:", { name, email });
-  alert("Get ready to dive into learning databases!");
-  window.location.href = "mainpage.html";
+  // Sign up with Firebase
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      alert(`Welcome ${name}! Get ready to dive into learning databases!`);
+      console.log("Signed Up:", userCredential.user);
+      window.location.href = "mainpage.html";
+    })
+    .catch((error) => {
+      warning.textContent = error.message;
+      console.error("Sign-up error:", error);
+    });
 });
