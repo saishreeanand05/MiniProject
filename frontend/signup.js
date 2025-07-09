@@ -1,5 +1,6 @@
 
 //  Firebase Config
+<<<<<<< HEAD
 const firebaseConfig = {
 <<<<<<< HEAD
   apiKey: "AIzaSyBCCPdCayYXPzozji9uopVfEv-2cCvuejE",
@@ -19,6 +20,9 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 >>>>>>> 67a5b10 (Add firebase authentication and add firebase credentials in env file.)
 };
+=======
+
+>>>>>>> f48a3da (Solved firebase issue)
 
 //  Initialize Firebase
 firebase.initializeApp(firebaseConfig);

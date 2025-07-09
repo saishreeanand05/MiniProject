@@ -1,5 +1,6 @@
 
 
+<<<<<<< HEAD
 const firebaseConfig = {
 <<<<<<< HEAD
   apiKey: "AIzaSyBCCPdCayYXPzozji9uopVfEv-2cCvuejE",
@@ -20,6 +21,8 @@ const firebaseConfig = {
 >>>>>>> 67a5b10 (Add firebase authentication and add firebase credentials in env file.)
 };
 
+=======
+>>>>>>> f48a3da (Solved firebase issue)
 const errorMessages = {
   "auth/user-not-found": "No account found with that email.",
   "auth/wrong-password": "Incorrect password. Please try again.",
