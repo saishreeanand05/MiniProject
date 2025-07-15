@@ -215,9 +215,21 @@
         font-size: 1.05rem;
     }
 }
+
+
+
 </style>
 
 <body>
+    <div class="scrolling-disclaimer" id="disclaimerBar">
+        <div class="scrolling-text-container">
+            <div class="scrolling-text">
+                ⚠️ Disclaimer: This site does NOT save data! Kindly export after session. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <button class="disclaimer-close" onclick="document.getElementById('disclaimerBar').style.display='none'">×</button>
+    </div>
+
     <header>
         <div class="app-title">GUI FOR RDBMS</div>
         <div class="header-actions">
@@ -287,5 +299,13 @@
         
     <script src="mainpage.js"></script>
     <script src="api.js"></script>
+    <div class="scrolling-disclaimer" id="disclaimerBar">
+        <div class="scrolling-text-wrapper">
+            <span class="scrolling-text">⚠️ Disclaimer: This site does NOT save data! Kindly export after session.</span>
+        </div>
+        <button class="disclaimer-close" onclick="document.getElementById('disclaimerBar').style.display='none'">×</button>
+    </div>
+
+
 </body>
 </html>
